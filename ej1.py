@@ -36,14 +36,46 @@ ax3.set_title('APMS')
 f=plt.figure(1)
 plt.show()
 
-#%%
+#%% Calculo valores de la tabla
 
 nodes=[G_Y2H.number_of_nodes(),G_LIT.number_of_nodes(),G_APMS.number_of_nodes()]
 edges=[G_Y2H.number_of_edges(),G_LIT.number_of_edges(),G_APMS.number_of_edges()]
+esdirigida=[directed(Y2H),directed(LIT),directed(APMS)]
+grado_medio=[np.mean(list(dict(G_Y2H.degree).values())), 
+             np.mean(list(dict(G_LIT.degree).values())),
+             np.mean(list(dict(G_APMS.degree).values()))]
+gradoin=[np.mean(list(dict(G_Y2H.in_degree).values())), 
+         np.mean(list(dict(G_LIT.in_degree).values())),
+         np.NaN]
+gradoout=[np.mean(list(dict(G_Y2H.out_degree).values())), 
+         np.mean(list(dict(G_LIT.out_degree).values())),
+         np.NaN]
+gradomax=[max(list(dict(G_Y2H.degree).values())), 
+          max(list(dict(G_LIT.degree).values())),
+          max(list(dict(G_APMS.degree).values()))]
+gradomin=[min(list(dict(G_Y2H.degree).values())), 
+          min(list(dict(G_LIT.degree).values())),
+          min(list(dict(G_APMS.degree).values()))]
+densidad=[]
+for i in range(3):
+    densidad.append(edges[i]/(nodes[i]*(nodes[i]-1)/2))
+densidad[2]=densidad[2]*2
+
+    
+
+
+#%% Grafico tabla
 
 caract = pd.DataFrame({ "Red":["Y2H","LIT","APMS"], 
                         "N":nodes,
-                        "L":edges
+                        "L":edges,
+                        "Es dirigida":esdirigida,
+                        "<k>":grado_medio,
+                        "<k in>":gradoin,
+                        "<k out>":gradoout,
+                        "k máx":gradomax,
+                        "k mín":gradomin,
+                        "Densidad":densidad
                       })
 print(caract)
 
