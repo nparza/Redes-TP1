@@ -22,14 +22,10 @@ def directed(lista):
         i+=1
     return isdirected
 
-def creategraph(lista):
-    if directed(lista)==True:
-        graph=nx.DiGraph()
-    else: 
-        graph=nx.Graph()
-    graph.add_edges_from(lista)
-    return graph
-    
+def degrees2list(grafo):
+    lista=list(dict(grafo.degree).values())
+    return lista
+
         
             
         
