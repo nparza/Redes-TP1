@@ -55,6 +55,8 @@ for red in redes:
     densidad.append(edges[pos]/(nodes[pos]*(nodes[pos]-1)/2))
     compgigante=max(nx.connected_component_subgraphs(red),key=len)
     diam.append(nx.diameter(compgigante))
+    clust1.append(nx.average_clustering(red))
+    clust2.append(nx.transitivity(red))
     pos+=1
     
 esdirigida=[False]*3 #Interacción entre proteínas: no dirigido
@@ -71,8 +73,8 @@ caract = pd.DataFrame({ "Red":["Y2H","LIT","APMS"],
                         "k máx":kmax,
                         "k mín":kmin,
                         "Densidad":densidad,
-                        #"Coef. clustering1": ,
-                        #"Coef. clustering2": ,
+                        "Clust. <Ci>": clust1,
+                        "Clust. global": clust2,
                         "Diametro":[np.inf]*3,
                         "Diam. comp. gigante":diam
                       })
