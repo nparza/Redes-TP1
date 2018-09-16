@@ -131,6 +131,8 @@ caract2 = pd.DataFrame({ "Red":["Y2H","LIT","APMS"],
 print(caract2)
 
 
+#Agregar <k> y densidad de cada componente
+
 
 
 
