@@ -76,7 +76,7 @@ plt.loglog(centros,pk_log,'.')
 applyPlotStyle()
 plt.show()
 
-#%% Grafico comparativo linear-log scale
+#%% Grafico comparativo linear/log scale
 
 f, (ax1,ax2) = plt.subplots(1,2)
 
@@ -94,6 +94,7 @@ applyPlotStyle()
 
 plt.subplots_adjust(wspace=0.4)
 
+#%%   
 
 #%% Binneado lineal
 
@@ -127,32 +128,5 @@ plt.title('Linear Binning',loc='left')
 plt.show()   
 
   
-#%% Binneado logaritmico
-
-nbins=100
-#np.log10(kmax)
-bins=np.logspace(0,3.38,nbins)
-
-#Calculo los centros de los binnes
-centros=[]
-for i in range(len(bins)-1):
-    c=(bins[i]+bins[i+1])/2
-    centros.append(c)
-
-#Armo el histograma. Tiene que pasar bins2==bins p c elemento.
-h,bins2=np.histogram(listk,bins);
-
-#Ploteo la funcion de ditribución 
-pk=[]
-for i in range(len(h)):
-    pk.append(h[i]/(bins[i+1]-bins[i]))
-
-pk=np.array(pk)
-
-plt.loglog(centros,h/N,'.')
-plt.loglog(centros,pk/sum(pk),'.')
-plt.show()
-
-    
 
 
