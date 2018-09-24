@@ -6,7 +6,6 @@ Created on Sat Sep  8 15:01:36 2018
 """
 import numpy as np
 import networkx as nx
-from scipy.optimize import curve_fit
 from itertools import chain
 
 
@@ -21,15 +20,68 @@ def ldata(archive):
 
 ### Cuantificación de homofilia
     
-## Devuelve  la fracción que representan las parejas heterosexuales
-## respecto al total
-def straight(graph):
-    edges = list(dict(graph.edges))
-    hetero = [ edges[n] if graph.nodes[edges[n][0]] != graph.nodes[edges[n][1]] 
-    else '' for n in range(graph.number_of_edges())]
-    hetero = list(set(list(hetero)))[1:]
-    return len(hetero)
 
+def straight(graph,):
+    
+    ## Devuelve  la fracción que representan las parejas heterosexuales
+    ## respecto al total
+    
+    edges = list(dict(graph.edges))
+    hetero = 0
+    for n in range(graph.number_of_edges()):
+        if graph.nodes[edges[n][0]] != graph.nodes[edges[n][1]]:
+            hetero += 1
+        else:
+            hetero += 0
+    return hetero
+
+
+
+def grupo(graph,attribute='gender', kind='f'):
+    
+    ## Te da una lista de los nodos con un cierto atributo 
+    
+    nodes = list(dict(graph.nodes))
+    group = []
+    for n in nodes:
+        if graph.nodes[n][attribute] == kind:
+            group.append(n)
+    return group
+
+
+def subgraph(graph,attribute='gender', kind='f'):
+    
+    ## Te da una lista de los edges que comparten un atributo
+    
+    edges = list(dict(graph.edges))
+    subgraph = []
+    for n in range(graph.number_of_edges()):
+        if graph.nodes[edges[n][0]] == graph.nodes[edges[n][1]] and graph.nodes[edges[n][0]] == kind :
+            subgraph.append(edges[n])
+    return subgraph
+    
+def modulacion(graph, attribute='gender'):
+    #### Calcula la modulación. REVISAR ESTO!!!!!!
+    q = 0
+    m = (2*graph.number_of_edges())
+    for i in range(graph.number_of_nodes()):
+        for j in range(graph.number_of_nodes()):
+            
+            ni = list(dict(graph.nodes()))[i]
+            nj = list(dict(graph.nodes()))[j]
+            
+            if graph.nodes[ni][attribute] == graph.nodes[nj][attribute]:
+                ki = graph.degree()[ni]
+                kj = graph.degree()[nj]
+                aij = nx.adjacency_matrix(graph)[i,j]
+
+                qij = aij - ki*kj/(2*graph.number_of_edges())
+            else:
+                qij = 0
+            q += qij
+            
+    return q/m
+    
 
 ##Reasigna un atributo aleatoriamente manteniendo la proporción
 ## original de dicho atributo

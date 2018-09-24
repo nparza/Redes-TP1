@@ -37,16 +37,19 @@ nx.draw(dolphins,
 
 #%%
 
+## Fracción
 
-
-times = 10000
+times = 1000
 fraccion = []
-fraccion_medida = straight(dolphins)/dolphins.number_of_edges()
+#modul = []
+fraccion_medida = straight(dolphins)/dolphins.number_of_edges() ##Fracción de enlaces de distinto sexo
+#modul_medida = modulacion(dolphins, attribute='gender')
 
 
 for n in range(times):
     dolphins = bend(dolphins, gender, name_attribute='gender')
     fraccion.append(straight(dolphins)/dolphins.number_of_edges())
+#    modul.append(modulacion(dolphins,attribute='gender'))
     
 
 
@@ -61,6 +64,7 @@ stdev = np.std(fraccion)
 ### El p-val corresponde a la probabilidad de obtener un resultado mayor o igual al obtenido
 p_val = pval(freq_normed, binedges, fraccion_medida)
 
+plt.figure(1)
 plt.rc('lines', **lins)
 plt.axvline(x=fraccion_medida, color='k', linestyle='dashed', linewidth=1)
 plt.bar(bincenters,freq_normed, color='orange',edgecolor='black', linewidth=1.2, width = np.diff(binedges))
@@ -69,7 +73,33 @@ plt.ylabel('Frecuencia')
 plt.xlabel('Fracción de parejas heteronormativas.' )
 plt.title('Fracción medida %s. p-val %s. Media de la distribución: %s ±% s ' 
 %(round(fraccion_medida,2),round(p_val,2),round(mean,2 ),round(stdev,2) ))
-plt.show()
+plt.show(1)
+
+
+#freq, binedges = np.histogram(modul, bins=20)
+#norm = sum(freq)
+#freq_normed = [i/norm for i in freq]
+#bincenters = 0.5*(binedges[1:]+binedges[:-1])
+#lins = {'linestyle': 'None'}
+#
+#mean = np.mean(modul)
+#stdev = np.std(modul)
+#### El p-val corresponde a la probabilidad de obtener un resultado mayor o igual al obtenido
+#p_val = pval(freq_normed, binedges, fraccion_medida)
+#
+#plt.figure(2)
+#plt.rc('lines', **lins)
+#plt.axvline(x=modul_medida, color='k', linestyle='dashed', linewidth=1)
+#plt.bar(bincenters,freq_normed, color='green',edgecolor='black', linewidth=1.2, width = np.diff(binedges))
+#plt.grid(True)
+#plt.ylabel('Frecuencia')
+#plt.xlabel('Distribución de la modulación' )
+#plt.title('Modulación medida %s. p-val %s. Media de la distribución: %s ±% s ' 
+#%(round(modul_medida,2),round(p_val,2),round(mean,2 ),round(stdev,2) ))
+#plt.show(2)
+#
+
+
 
 
 
