@@ -9,7 +9,7 @@ def ldata(archive):
         data.append(col)	
     return data
 
-def directed(lista):
+def repeated_edge(lista):
     i=0
     isdirected=False
     while i<len(lista) and isdirected==False:
