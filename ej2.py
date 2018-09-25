@@ -10,6 +10,7 @@ import networkx as nx
 from matplotlib import pyplot as plt
 from itertools import chain
 from func2 import *
+from func import *
 
 
 #%%
@@ -27,7 +28,7 @@ for n,g in zip(dolphins.nodes,gender):
 
 ### Layout
 
-nx.draw(dolphins2, 
+nx.draw(dolphins, 
         with_labels=True,
         node_color= ['blue' if g=="m" 
                      else "r" 
@@ -139,17 +140,6 @@ plt.xlabel('Fracción de enlaces dentro del mismo género' )
 plt.title('Fracción medida %s. p-val %s. Media de la distribución: %s ±% s ' 
 %(round(fraccion_medida,2),round(p_val,2),round(mean,2 ),round(stdev,2) ),fontsize=10)
 plt.show(2)
-
-
-
-
-
-
-
-
-
-
-
 
 
 

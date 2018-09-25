@@ -112,9 +112,18 @@ def pval(freq,bines,Tobs):
         return 1 - cumprob[i-1] 
     
 
-## ANDA, PERO NO CALCULA LO QUE QUIERO
-# Cunado reasigno los edges, no contemplo que se me pueden armar pares repetidos
-# o loops
+       
+def switch(edge1,edge2):
+    
+    ## Switchea los primeros nodos de los los enlaces
+    ## Devuelve los dos enlaces intercambiados
+    
+    nodo = edge1[0]
+    edge1[0] = edge2[0]
+    edge2[0] = nodo 
+    return edge1, edge2
+
+## NO ANDAAA!!!
 
 def recableado(graph):
     
@@ -129,21 +138,80 @@ def recableado(graph):
     new_edges = []
     for i in range(0,len(half_edges)-1,2):
         new_edges.append([half_edges[i],half_edges[i+1]])
+     
+    # Extraigo los self loops y los guardo en una lista
+    self_loops = []
+    for edge in new_edges:
+        if edge[0] == edge[1]:
+            new_edges.remove(edge)
+            self_loops.append(edge)
+    
+    # Extraigo los que se repiten más de una vez y los guardo
+    repeated = []
+    for i in range(len(new_edges)-1):
+        for edge in new_edges[i+1:]:
+            if new_edges[i][0] in edge and new_edges[i][1] in edge:
+                new_edges.remove(edge)
+                repeated.append(edge)
+    
+    for loop in self_loops:
+        
+        no_go = True
+        while no_go:
+        
+            # Elijo un edge al azar para switchear con mi loop edge
+            no_go2 = True
+            while no_go2:
+                index = np.random.choice(range(0,len(new_edges)))
+                if new_edges[index][0] != loop[0] and new_edges[index][1] != loop[0]:
+                    edge_elegido = new_edges[index]
+                    new_edges.pop(index)
+                    no_go2 = False
+            
+            # Switcheo los edges y me fijo que no se repitan en new_edges  
+            edge1, edge2 = switch(loop,edge_elegido)
+            if edge1 not in new_edges and edge2 not in new_edges:
+                new_edges.append(edge1)
+                new_edges.append(edge2)
+                no_go = False
+            else: new_edges.append(edge_elegido)
+            
+    for repe in repeated:
+        
+        no_go = True
+        while no_go:
+            
+            # Elijo un edge al azar para switchear con mi repe edge
+            no_go2 = True
+            while no_go2:
+                index = np.random.choice(range(0,len(new_edges)))
+                if set(repe) != set(new_edges[index]):
+                    edge_elegido = new_edges[index]
+                    new_edges.pop(index)
+                    no_go2 = False
+            
+            # Switcheo los edges y me fijo que no se repitan en new_edges 
+            # y que tampoco sean self_loop
+            edge1, edge2 = switch(repe,edge_elegido)
+            
+            self_loop = False
+            if edge1[0] == edge1[1] or edge2[0] == edge2[1]:
+                self_loop = True
+            #no_repeated = edge1 not in new_edges and edge2 not in new_edges
+            is_repeated = False
+            if edge1 in new_edges or edge2 in new_edges:
+                is_repeated = True
 
-    # Arreglo posibles loops
-#    while i<len(new_edges):
-#        if new_edges[i][0] == new_edges[i][1]:
-#            # Separo en dos casos por si el último edge es un loop
-#            if i == len(new_edges)-1:
-#                np.random.shuffle(new_edges)
-#                i = -1
-#            else:
-#                nodo = new_edges[i][0] 
-#                new_edges[i][0] = new_edges[i+1][0]
-#                new_edges[i+1][0] = nodo
-#                i -= 1  
-#        i += 1
-#    
+            if self_loop == False and is_repeated == False:
+                new_edges.append(edge1)
+                new_edges.append(edge2)
+                no_go = False
+            else: new_edges.append(edge_elegido)
+          
+    
+    
+    
+    
     # Creo el grafo recableado
     new_graph = nx.Graph()
     new_graph.add_edges_from(new_edges)
