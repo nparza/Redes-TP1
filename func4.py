@@ -6,6 +6,7 @@ Created on Tue Sep 25 12:43:28 2018
 """
 import numpy as np
 import networkx as nx
+from scipy import optimize
 
 
 def degrees(grafo, node = 'All'):
