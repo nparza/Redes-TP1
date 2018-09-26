@@ -60,29 +60,55 @@ def subgraph(graph,attribute='gender', kind='f'):
             subgraph.append(edges[n])
     return subgraph
     
-def modularidad(graph, attribute='gender'):
+def modularidad(graph, attribute='gender', normed= 'False'):
     
     #### Calcula la modularidad de la red
     
     q = 0
+    qmax = 0
     m = (2*graph.number_of_edges())
-    for i in range(graph.number_of_nodes()):
-        for j in range(graph.number_of_nodes()):
+    if normed == 'False':
+        for i in range(graph.number_of_nodes()):
+            for j in range(graph.number_of_nodes()):
+                
+                ni = list(dict(graph.nodes()))[i]
+                nj = list(dict(graph.nodes()))[j]
+                
+                if graph.nodes[ni][attribute] == graph.nodes[nj][attribute]:
+                    ki = graph.degree()[ni]
+                    kj = graph.degree()[nj]
+                    aij = nx.adjacency_matrix(graph)[i,j]
+    
+                    qij = aij - ki*kj/m
+                else:
+                    qij = 0
+                q += qij
+        q = q/m
+    if normed == 'True':
+        for i in range(graph.number_of_nodes()):
+            for j in range(graph.number_of_nodes()):
             
-            ni = list(dict(graph.nodes()))[i]
-            nj = list(dict(graph.nodes()))[j]
-            
-            if graph.nodes[ni][attribute] == graph.nodes[nj][attribute]:
-                ki = graph.degree()[ni]
-                kj = graph.degree()[nj]
-                aij = nx.adjacency_matrix(graph)[i,j]
+                ni = list(dict(graph.nodes()))[i]
+                nj = list(dict(graph.nodes()))[j]
+                
+                if graph.nodes[ni][attribute] == graph.nodes[nj][attribute]:
+                    ki = graph.degree()[ni]
+                    kj = graph.degree()[nj]
+                    aij = nx.adjacency_matrix(graph)[i,j]
+    
+                    qij = aij - ki*kj/m
+                    qmaxij = ki*kj
+                else:
+                    qij = 0
+                    qmaxij = 0
+                q += qij
+                qmax += qmaxij
 
-                qij = aij - ki*kj/m
-            else:
-                qij = 0
-            q += qij
+    qmax = (2*m -qmax/(2*m))/(2*m)
+    q = q/m
+    qnormed = q/qmax        
             
-    return q/m
+    return q, qmax, qnormed
  
     
 ##Reasigna un atributo aleatoriamente manteniendo la proporción
