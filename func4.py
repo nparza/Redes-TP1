@@ -51,6 +51,29 @@ def nearest_nei(graph):
         deg += 1
     return k_vecinos, k
 
+def powerlaw_fit(Xdata,Ydata, p0 = [-2,2]):
+    
+    fitfunc = lambda p,x: p[0]*x+p[1]
+    powerlaw = lambda x, C, a: C*(x**a)    
+    
+    # Datos que se van a fittear
+    x = np.log10(np.array(Xdata))
+    y = np.log10(np.array(Ydata))
+    
+    # Distancia a la función objetivo
+    errfunc = lambda p,x,y: fitfunc(p,x)-y 
+    
+    # Ajuste con scipy
+    out = optimize.leastsq(errfunc, p0, args=(x,y), full_output = 1)
+    p = out[0]; covar = out[1]
+
+    # Parámetros de la power-law
+    C = 10.0**p[1]
+    a = p[0]
+    a_err = np.sqrt(covar[0][0])
+    
+    return C, a, a_err
+
 
 def asort_Newman(graph):
     S1 = np.sum([ degrees(graph, node='All') ])
