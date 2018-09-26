@@ -64,7 +64,7 @@ def modularidad(graph, attribute='gender'):
     
     #### Calcula la modularidad de la red
     
-    q = 0
+    q = 0; qmax = 0
     m = (2*graph.number_of_edges())
     for i in range(graph.number_of_nodes()):
         for j in range(graph.number_of_nodes()):
@@ -78,13 +78,16 @@ def modularidad(graph, attribute='gender'):
                 aij = nx.adjacency_matrix(graph)[i,j]
 
                 qij = aij - ki*kj/m
+                qmaxij = ki*kj
             else:
                 qij = 0
-            q += qij
+                qmaxij = 0
             
-    return q/m
- 
-    
+            q += qij
+            qmax += qmaxij
+            
+    return q/m, 1-qmax/(m*m)
+
 ##Reasigna un atributo aleatoriamente manteniendo la proporción
 ## original de dicho atributo
 def bend(graph, attribute, name_attribute='gender'):
